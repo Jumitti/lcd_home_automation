@@ -48,8 +48,41 @@ For this step we will need to use the APIs.
 
 APIs generally require a token and an ID. The "token" represents the instance that you will call to obtain the information and the ID is you. For security reasons I never write the token and ID directly in the code. You never know.
 
+To avoid writing API information in the code, I use a ``SECRETS.json`` in the same place as the LCD script. The scripts then read the ``SECRETS.json`` to get the information.
+```
+{
+  "TELEGRAM_ID_OWNER": YOUR_TELEGRAM_ID,
+  "TELEGRAM_BOT_TOKEN": "YOUR_TELEGRAM_BOT_TOKEN",
+  "SPOTIFY_CLIENT_ID": "YOUR_SPOTIFY_CLIENT_ID",
+  "SPOTIFY_CLIENT_SECRET": "YOUR_SPOTIFY_CLIENT_SECRET",
+  "SPOTIFY_REDIRECT_URI": "YOUR_SPOTIFY_REDIRECT_URI",
+  "TRAKT_CLIENT_ID": "YOUR_TRAKT_CLIENT_ID",
+  "TRAKT_USERNAME": "YOUR_TRAKT_USERNAME"
+}
+```
+*Note: There are also already the keys for Telegram which we will see later*
 
+### For Trakt
+
+Trakt.tv is a smartphone application and website that allows you to follow the progress of our films and series. They have a function that allows you to directly track when an episode or film is playing. You can use Trakt.tv with Kodi, Netflix, Plex, VLC... I refer you directly to [Trakt.tv](https://trakt.tv/home)
+
+1. Create an account on Trakt.tv
+2. Replace "YOUR_TRAKT_USERNAME" with your "Username" in the ``SECRETS.json``
+3. Go to ``Settings > Your API apps`` and create an API app
+4. In your API app, you will find "Client ID". Replace "YOUR_TRAKT_CLIENT_ID"  with your "Client ID" in the SECRETS.json
 
 ### For Spotify
 
-### For Trakt
+For Spotify it's a little more complicated. But we'll take it easy.
+
+1. Create a [Spotify API](https://developer.spotify.com), configure Redirect URI (e.g http://localhost:9090), select Web API.
+2. Go to the ``Settings`` of your Spotify API.
+3. In the ``Basic information tab``, you will find the "Client ID", the "Client Secret" and the "Redirect URI" (which you set by configuring the API)
+4. Replace the information from SECRETS.json as you did for Trakt.tv
+3. Add your Spotify account in the ``User Management tab``
+
+For this step I suggest you do it on Windows. The Spotify API needs a connection to a web page for proper authentication. Once the connection is verified, a .cache file is created. It is this file that you can drag to the root of the LCD folder.
+
+*Note: .cache is a hidden file*
+
+
