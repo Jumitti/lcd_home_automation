@@ -124,20 +124,21 @@ def get_trakt_now_playing():
         activity_response = requests.get(url, headers=headers)
 
         # Check if the response status code is OK (200)
-        if activity_response.status_code == 200:
-            response = json.loads(activity_response.text)
+        try:
+            if activity_response.status_code == 200:
+                response = json.loads(activity_response.text)
 
-            if response['type'] == 'movie':
-                movie_title = response['movie']['title']
-                movie_year = response['movie']['year']
-                trakt_playing = f"{movie_title} ({movie_year})"
-            elif response['type'] == 'episode':
-                show_title = response['show']['title']
-                season_number = response['episode']['season']
-                episode_number = response['episode']['number']
-                trakt_playing = f"{show_title} S{season_number}E{episode_number}"
-            is_playing = 1
-        else:
+                if response['type'] == 'movie':
+                    movie_title = response['movie']['title']
+                    movie_year = response['movie']['year']
+                    trakt_playing = f"{movie_title} ({movie_year})"
+                elif response['type'] == 'episode':
+                    show_title = response['show']['title']
+                    season_number = response['episode']['season']
+                    episode_number = response['episode']['number']
+                    trakt_playing = f"{show_title} S{season_number}E{episode_number}"
+                is_playing = 1
+        except Exception as e:
             print(f"Error Trakt API: Non-OK response status code {activity_response.status_code}")
             is_playing = 0
             trakt_playing = None
@@ -343,7 +344,6 @@ sp = spotipy.Spotify(
                               scope='user-read-playback-state'))
 
 # Start LCD
-display.lcd_backlight(1)
 display.lcd_clear()
 print('Success: LCD ON')
 display.lcd_display_string("  Hello  World  ", 1)
