@@ -5,17 +5,13 @@ import glob
 import json
 import os
 import subprocess
-from datetime import datetime
 from time import sleep
 from time import strftime
 
 import requests
 import spotipy
-import telepot
 from gpiozero import CPUTemperature
-from gpiozero import OutputDevice
 from spotipy.oauth2 import SpotifyOAuth
-from telepot.loop import MessageLoop
 
 # Import necessary libraries for communication and display use
 import drivers
@@ -67,33 +63,6 @@ def ds18b20(temp_file):
 
 # Retrieve date, time and gestion control
 def get_date():
-    # For auto update
-    now = datetime.now()
-    day = now.weekday()
-    hour = strftime("%H:%M")
-    date = strftime("%d")
-
-    if day == 0 and hour == '02:30' and not update.value:  # Little update
-        update.on()
-        bot.sendMessage(chat_id_owner, 'Starting weekly update...')
-        os.system('sudo apt-get update -y')
-        bot.sendMessage(chat_id_owner, 'Weekly update done.\nStarting weekly upgrade...')
-        os.system('sudo apt-get upgrade -y')
-        bot.sendMessage(chat_id_owner, 'Weekly upgrade done')
-    elif date == '1' and hour == '02:00' and not update.value:  # Major update
-        update.on()
-        bot.sendMessage(chat_id_owner, 'Starting monthly update...')
-        os.system('sudo apt-get update -y')
-        bot.sendMessage(chat_id_owner, 'Monthly update done.\nStarting monthly upgrade...')
-        os.system('sudo apt-get upgrade -y')
-        bot.sendMessage(chat_id_owner, 'Monthly upgrade done.\nStarting monthly autoremove...')
-        os.system('sudo apt-get autoremove -y')
-        bot.sendMessage(chat_id_owner, 'Monthly autoremove done.\nStarting reboot...\nSee U soon')
-        # os.system('sudo reboot now')
-    elif hour not in update_list and update.value:
-        update.off()
-
-    # For LCD
     LCD_date = str(strftime("%a %d.%m  %H:%M"))
     return LCD_date
 
@@ -177,96 +146,13 @@ def display_media(media, media_type):
         sleep(1)
 
 
-# Commands from Telegram Bot
-def handle(msg):
-    chat_id_input = msg['chat']['id']
-    command = msg['text']
-
-    if chat_id_input == chat_id_owner:
-
-        # Command to ON/OFF LCD
-        if command == '/lcd_off':
-            display.lcd_backlight(0)
-            bot.sendMessage(chat_id_owner, "LCD OFF")
-        elif command == '/lcd_on':
-            display.lcd_backlight(1)
-            bot.sendMessage(chat_id_owner, "LCD ON")
-
-        # Get temperature of CPU and DS18B20
-        elif command == '/temp':
-            bot.sendMessage(chat_id_owner, f'CPU: {cpu[0:4]}°C\nHouse: {house_temp[0:4]}°C ')
-
-        # Update Raspberry
-        elif command == '/quick_update':
-            update.on()
-            bot.sendMessage(chat_id_owner, 'Starting update...')
-            os.system('sudo apt-get update -y')
-            bot.sendMessage(chat_id_owner, 'Update done.\nStarting upgrade...')
-            os.system('sudo apt-get upgrade -y')
-            bot.sendMessage(chat_id_owner, 'Upgrade done')
-        elif command == '/update':
-            update.on()
-            bot.sendMessage(chat_id_owner, 'Starting update...')
-            os.system('sudo apt-get update -y')
-            bot.sendMessage(chat_id_owner, 'Update done.\nStarting upgrade...')
-            os.system('sudo apt-get upgrade -y')
-            bot.sendMessage(chat_id_owner, 'Upgrade done.\nStarting autoremove...')
-            os.system('sudo apt-get autoremove -y')
-            bot.sendMessage(chat_id_owner, 'Autoremove done.\nStarting reboot...\nSee U soon')
-            # os.system('sudo reboot now')
-
-        # Control Raspberry
-        elif command == '/reboot':
-            bot.sendMessage(chat_id_owner, 'See U soon')
-            os.system('sudo reboot now')
-        elif command == '/shutdown':
-            bot.sendMessage(chat_id_owner, 'Seen U soon')
-            os.system('sudo shutdown now')
-
-        # Commands for testing bot and components + help
-        elif command == '/test':
-            bot.sendMessage(chat_id_owner, 'test')
-        elif command == '/fan_on':
-            fan.on()
-        elif command == '/fan_off':
-            fan.off()
-        elif command == '/update_on':
-            update.on()
-        elif command == '/update_off':
-            update.off()
-        elif command == '/help_test':
-            bot.sendMessage(chat_id_owner,
-                            "/fan_on - /fan_off - Test the fan\n"
-                            "/update_on - /update_off - Test LED update\n"
-                            "/test - Is bot actived ?")
-        elif command == '/help':
-            bot.sendMessage(chat_id_owner,
-                            "/temp - Get temperature\n"
-                            "/quick_update - To update and upgrade without autoremove and reboot\n"
-                            "/update - To update, upgrade and autoremove AND REBOOT\n"
-                            "/shutdown - As excepted\n"
-                            '/lcd_on - As excepted\n'
-                            '/lcd_off - As excepted\n'
-                            "/help - A little reminder")
-        else:
-            bot.sendMessage(chat_id_owner, "I don't understand... Try /help or /help_test")
-
-    # Avoid an intrusion
-    else:
-        bot.sendMessage(chat_id_input, f"You are not allowed, your ID is {str(chat_id_input)}.")
-        bot.sendMessage(chat_id_owner, f"Someone trying to do something strange...\nID: {str(chat_id_input)}\n"
-                                       f"Message: {str(command)}")
-
-
-# Retrieve information of connection to Telegram Bot, Spotify API, GPIO etc...
+# Retrieve information of connection to Spotify API, GPIO etc...
 os.chdir("/home/pi/lcd/")  # To find .cache
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
 secrets_path = os.path.join(script_directory, 'SECRETS.json')
 with open(secrets_path, 'r') as secrets_file:
     secrets = json.load(secrets_file)
-TELEGRAM_ID_OWNER = secrets['TELEGRAM_ID_OWNER']
-TELEGRAM_BOT_TOKEN = secrets['TELEGRAM_BOT_TOKEN']
 
 SPOTIFY_CLIENT_ID = secrets['SPOTIFY_CLIENT_ID']
 SPOTIFY_CLIENT_SECRET = secrets['SPOTIFY_CLIENT_SECRET']
@@ -290,13 +176,6 @@ TRAKT_USERNAME = secrets['TRAKT_USERNAME']
 TRAKT_CLIENT_ID = secrets['TRAKT_CLIENT_ID']
 
 temp_file = glob.glob("/sys/bus/w1/devices/28*/w1_slave")  # File location for ambient temp from DS18B204
-
-GPIO_PIN_FAN = 17  # Fan control
-fan = OutputDevice(GPIO_PIN_FAN)
-
-GPIO_PIN_UPDATE = 27  # LED update control
-update = OutputDevice(GPIO_PIN_UPDATE)
-update_list = ['02:00', '02:30']
 
 # Load the driver and set it to "display"
 # If you use something from the driver library use the "display." prefix first
@@ -352,12 +231,6 @@ sp = spotipy.Spotify(
 display.lcd_clear()
 print('Success: LCD ON')
 display.lcd_display_string("  Hello  World  ", 1)
-
-# Start Telegram Bot
-bot = telepot.Bot(TELEGRAM_BOT_TOKEN)
-MessageLoop(bot, {'chat': handle}).run_as_thread()  # For receive command from Telegram Bot
-print('Success: Telebot ON')
-bot.sendMessage(TELEGRAM_ID_OWNER, 'Hello World 😊')
 
 # Loop for LCD
 while True:
