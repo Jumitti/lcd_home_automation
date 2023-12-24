@@ -226,19 +226,6 @@ def handle(msg):
         # Commands for testing bot and components + help
         elif command == '/test':
             bot.sendMessage(TELEGRAM_ID_OWNER, 'test')
-        elif command == '/fan_on':
-            fan.on()
-        elif command == '/fan_off':
-            fan.off()
-        elif command == '/update_on':
-            update.on()
-        elif command == '/update_off':
-            update.off()
-        elif command == '/help_test':
-            bot.sendMessage(TELEGRAM_ID_OWNER,
-                            "/fan_on - /fan_off - Test the fan\n"
-                            "/update_on - /update_off - Test LED update\n"
-                            "/test - Is bot actived ?")
         elif command == '/help':
             bot.sendMessage(TELEGRAM_ID_OWNER,
                             "/temp - Get temperature\n"
