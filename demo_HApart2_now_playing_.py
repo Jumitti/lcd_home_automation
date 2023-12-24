@@ -23,17 +23,6 @@ def get_temp_cpu():
     temp = cpu.temperature
     cpu = str(temp)
 
-    if temp > 65 and not fan.value:  # Warning hot temperature
-        fan.on()
-        bot.sendMessage(chat_id_owner, f"WARNING! Temperature too HOT! {cpu[0:4]}°C")
-    elif temp > 85:  # Alert too hot temperature  + shutdown
-        fan.on()
-        bot.sendMessage(chat_id_owner, f"ALERT! CRITICAL TEMPERATURE! {cpu[0:4]}°C ! SHUTDOWN !")
-        os.system('sudo shutdown now')
-    elif temp < 55 and fan.value:  # Temperature under control
-        fan.off()
-        bot.sendMessage(chat_id_owner, f"Temperature under control. {cpu[0:4]}°C. Good job !")
-
     return cpu
 
 
