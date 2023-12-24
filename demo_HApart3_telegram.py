@@ -242,7 +242,7 @@ def handle(msg):
     else:
         bot.sendMessage(chat_id_input, f"You are not allowed, your ID is {str(chat_id_input)}.")
         bot.sendMessage(TELEGRAM_ID_OWNER, f"Someone trying to do something strange...\nID: {str(chat_id_input)}\n"
-                                       f"Message: {str(command)}")
+                                           f"Message: {str(command)}")
 
 
 # Retrieve information of connection to Telegram Bot, Spotify API, GPIO etc...
@@ -332,7 +332,8 @@ cc.load_custom_characters_data()  # Load custom characters for LCD
 
 # Connection to Spotify API
 sp = spotipy.Spotify(
-    auth_manager=SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET, redirect_uri=SPOTIFY_REDIRECT_URI,
+    auth_manager=SpotifyOAuth(client_id=SPOTIFY_CLIENT_ID, client_secret=SPOTIFY_CLIENT_SECRET,
+                              redirect_uri=SPOTIFY_REDIRECT_URI,
                               scope='user-read-playback-state'))
 
 # Start LCD

@@ -29,6 +29,10 @@ This project is above all a proof of concept. But by going step by step you will
 
 Please note that the SCRETS.json and .cache files (see below for more information) must be placed at the root of the LCD project (at the same level as the demo_.py)
 
+## Requirements
+
+Install all python packages from ``requirements.txt``
+
 ## Temperature
 
 To get the CPU temperature it's not very complicated. Answers were given in the [Issues](https://github.com/the-raspberry-pi-guy/lcd/issues/58) of this GitHub Repo too.
