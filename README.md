@@ -114,6 +114,7 @@ sudo chmod 7777 .cache
 ## Telegram
 
 Why use Telegram? Because it's quite simple to use. You can code whatever you want in python and since the bot runs on the RPi it allows you to execute commands without opening an SSH or other connection. I'm sure there are ways to make it simpler but with this you can even control the RPi without being at home. You can automate events based on the time, the temperature of your CPU, your apartment...
+You can also write a text directly on the LCD by sending a message to the Telegram Bot (not implemented but easy to do)
 
 1. How to get your **ID**:
    - send ```/getid``` to [myidbot](https://telegram.me/myidbot) on [Telegram](https://web.telegram.org/k/)
