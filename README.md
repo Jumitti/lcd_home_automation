@@ -19,11 +19,36 @@ I separated it into 3 files to go step by step:
 This means that what you learn in ```HApart1_temperature.py``` will be used in ```HApart2_now_playing.py``` and ```HApart2_now_playing.py``` in ```HApart3_telegram.py```.
 This project is above all a proof of concept. But by going step by step you will understand that you can modify it for your needs.
 
-Please note that the SECRETS.json and .cache files (see below for more information) must be placed at the root of the LCD project (at the same level as the demo_.py)
+Please note that the SECRETS.json and .cache files (see below for more information) must be placed at the root of the LCD project
+
+## Before starting
 
 ### Requirements
 
 Install all python packages from ``requirements.txt``
+
+### Understand my documentation
+
+Part of the documentation is this ``README.md``.
+I also wanted to make modular scripts. Some features won't be useful to everyone, so I wanted to make it easy to "pick and choose" features.
+
+Please read all notes.
+
+In each script you would find sections like this:
+``` python
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
+house_temp = get_temp_ds18b20(temp_file)
+# ----------------------------DS18B20---------------------------
+```
+In this example, if you don't want ```house_temp```, you need to had ``#`` in front of the line:
+``` python
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
+# house_temp = get_temp_ds18b20(temp_file)
+# ----------------------------DS18B20---------------------------
+```
+
 
 ## Temperature
 
@@ -36,6 +61,23 @@ For the installation of the DS18B20 probe, I refer you to this [Tutorial](https:
 
 If you followed the steps, the temperatures save to ``w1_slave``. In the script, change the path of ``temp_file`` depending on where your ``w1_slave`` is located
 
+*Note: if you don't have a DS18B20 probe, disable all ``DS18B20`` section by adding ``#`` in front of each line and switch:*
+```python
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
+display.lcd_display_extended_string(' {0x00} ' + cpu[0:4] + '  {0x01} ' + house_temp[0:4], 2)  # Line 2 with CPU and DS18B20 temps
+# display.lcd_display_extended_string(' {0x00} ' + cpu[0:4], 2)  # Line 2 with only CPU temp
+# ----------------------------DS18B20---------------------------
+```
+*to:*
+```python
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
+# display.lcd_display_extended_string(' {0x00} ' + cpu[0:4] + '  {0x01} ' + house_temp[0:4], 2)  # Line 2 with CPU and DS18B20 temps
+display.lcd_display_extended_string(' {0x00} ' + cpu[0:4], 2)  # Line 2 with only CPU temp
+# ----------------------------DS18B20---------------------------
+```
+
 <p align="center">
   <img src="imgs/demo_HApart1_temperature.jpg" width="50%">
 </p>
@@ -47,7 +89,7 @@ For this step we will need to use the APIs.
 APIs generally require a token and an ID. The "token" represents the instance that you will call to obtain the information and the ID is you. For security reasons I never write the token and ID directly in the code. You never know.
 
 To avoid writing API information in the code, I use a ``SECRETS.json`` in the same place as the LCD script. The scripts then read the ``SECRETS.json`` to get the information.
-```
+``` json
 {
   "TELEGRAM_ID_OWNER": YOUR_TELEGRAM_ID,
   "TELEGRAM_BOT_TOKEN": "YOUR_TELEGRAM_BOT_TOKEN",
@@ -58,7 +100,9 @@ To avoid writing API information in the code, I use a ``SECRETS.json`` in the sa
   "TRAKT_USERNAME": "YOUR_TRAKT_USERNAME"
 }
 ```
-*Note: There are also already the keys for Telegram which we will see later*
+*Note 1: There are also already the keys for Telegram which we will see later*
+
+*Note 2: You can use Trakt, Spotify or both. Don't forget to disable/enable section depending on your purpose*
 
 ### For Trakt
 
@@ -155,7 +199,7 @@ Just send ```/help``` to your Telegram bot and see all command ! 😊
 #### Control CPU temperature
 RPi can heat, so to prevent an overheat I had a command to control a fan plugged at GPIO_PIN 17 to cooldown temperature:
 - You can set critical temperature:
-   ```
+   ``` python
    GPIO_PIN_FAN = 17
    fan = OutputDevice(GPIO_PIN_FAN)
   
@@ -183,7 +227,7 @@ I add a function to auto-update your Raspberry every monday @ 02:30 and major up
 I always plugged a LED at GPIO_PIN 27 to see when RPi do the update.
 
 - Day: M=0; T=1; W=2...
-    ```
+    ``` python
     GPIO_PIN_UPDATE = 27
     update = OutputDevice(GPIO_PIN_UPDATE)
   
@@ -205,6 +249,8 @@ I always plugged a LED at GPIO_PIN 27 to see when RPi do the update.
         os.system('sudo apt-get autoremove -y')
         bot.sendMessage(TELEGRAM_ID_OWNER, 'Monthly autoremove done.\nStarting reboot...\nSee U soon')
     ```
+
+*Note: GPIO pin for Fan and LED update can be disabled if you don't want this feature.*
 
 ## Conclusion
 
