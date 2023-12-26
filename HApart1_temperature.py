@@ -21,6 +21,9 @@ def get_temp_cpu():
     return cpu
 
 
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
+
 # Retrieve ambient temperature from DS18B20
 def get_temp_ds18b20(temp_file):
     try:
@@ -43,6 +46,7 @@ def ds18b20(temp_file):
     temp_value = temp.split("\n")[1]
     temp_output = temp_value.split(" ")[9]
     return float(temp_output[2:]) / 1000
+# ----------------------------DS18B20---------------------------
 
 
 # Retrieve date, time and gestion control
@@ -51,7 +55,10 @@ def get_date():
     return LCD_date
 
 
+# ----------------------------DS18B20---------------------------
+    # You can disable this feature by adding # in front of each line
 temp_file = glob.glob("/sys/bus/w1/devices/28*/w1_slave")  # File location for ambient temp from DS18B204
+# ----------------------------DS18B20---------------------------
 
 # Load the driver and set it to "display"
 # If you use something from the driver library use the "display." prefix first
@@ -69,6 +76,8 @@ cc.char_1_data = ["01010",  # CPU 0x00
                   "01010",
                   "00000"]
 
+# ----------------------------DS18B20---------------------------
+# You can disable this feature by adding # in front of each line
 cc.char_2_data = ["00100",  # House 0x01
                   "01110",
                   "11011",
@@ -77,6 +86,7 @@ cc.char_2_data = ["00100",  # House 0x01
                   "10101",
                   "11111",
                   "00000"]
+# ----------------------------DS18B20---------------------------
 
 cc.load_custom_characters_data()  # Load custom characters for LCD
 
@@ -87,13 +97,22 @@ display.lcd_display_string("  Hello  World  ", 1)
 
 # Loop for LCD
 while True:
-
-    cpu = get_temp_cpu()
-    house_temp = get_temp_ds18b20(temp_file)
     LCD_date = get_date()
+    cpu = get_temp_cpu()
+
+    # ----------------------------DS18B20---------------------------
+    # You can disable this feature by adding # in front of each line
+    house_temp = get_temp_ds18b20(temp_file)
+    # ----------------------------DS18B20---------------------------
 
     # Display on LCD
     display.lcd_clear()  # Avoid having residual characters
     display.lcd_display_string(LCD_date, 1)  # Line 1
-    display.lcd_display_extended_string(' {0x00} ' + cpu[0:4] + '  {0x01} ' + house_temp[0:4], 2)  # Line 2
+
+    # ----------------------------DS18B20---------------------------
+    # You can disable this feature by adding # in front of each line
+    display.lcd_display_extended_string(' {0x00} ' + cpu[0:4] + '  {0x01} ' + house_temp[0:4], 2)  # Line 2 with CPU and DS18B20 temps
+    # display.lcd_display_extended_string(' {0x00} ' + cpu[0:4], 2)  # Line 2 with only CPU temp
+    # ----------------------------DS18B20---------------------------
+
     sleep(1)

@@ -1,35 +1,27 @@
 # LCD
-This repository contains all the code for interfacing with a **16x2 character I2C liquid-crystal display (LCD)**. This accompanies my **Youtube tutorial**: [Raspberry Pi - Mini LCD Display Tutorial](https://www.youtube.com/watch?v=fR5XhHYzUK0).
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=fR5XhHYzUK0">
-    <img src="imgs/thumb-yt-rpiguy-lcd-tutorial.png" width="80%">
-  </a>
-</p>
+This repository contains all the code for interfacing with a **16x2 character I2C liquid-crystal display (LCD)**. This accompanies a **Youtube tutorial**: [Raspberry Pi - Mini LCD Display Tutorial](https://www.youtube.com/watch?v=fR5XhHYzUK0).
 
 You can buy one of these great little I2C LCD on eBay or somewhere like [the Pi Hut](https://thepihut.com/search?type=product&q=lcd).
 
-# Installation, implementation and contributions
+## Installation and implementation
 
-Please refer to [Original repo LCD](https://github.com/the-raspberry-pi-guy/lcd)
-
-I left the original repo in my fork for simplicity.
+Please refer to [Original repo LCD](https://github.com/the-raspberry-pi-guy/lcd) from [The Raspberry Pi Guy](https://github.com/the-raspberry-pi-guy) and do a test before try my script.
 
 # Home Automation
 
 I'm sorry for the length of the explanations. It’s a “big home automation project”. 
 
 I separated it into 3 files to go step by step:
-- ```demo_HApart1_temperature.py```
-- ```demo_HApart2_now_playing.py```
-- ```demo_HApart3_telegram.py```
+- ```HApart1_temperature.py```
+- ```HApart2_now_playing.py```
+- ```HApart3_telegram.py```
 
-This means that what you learn in ```demo_HApart1_temperature.py``` will be used in ```demo_HApart2_now_playing.py``` and ```demo_HApart2_now_playing.py``` in ```demo_HApart3_telegram.py```.
+This means that what you learn in ```HApart1_temperature.py``` will be used in ```HApart2_now_playing.py``` and ```HApart2_now_playing.py``` in ```HApart3_telegram.py```.
 This project is above all a proof of concept. But by going step by step you will understand that you can modify it for your needs.
 
-Please note that the SCRETS.json and .cache files (see below for more information) must be placed at the root of the LCD project (at the same level as the demo_.py)
+Please note that the SECRETS.json and .cache files (see below for more information) must be placed at the root of the LCD project (at the same level as the demo_.py)
 
-## Requirements
+### Requirements
 
 Install all python packages from ``requirements.txt``
 
@@ -121,7 +113,7 @@ Why use Telegram? Because it's quite simple to use. You can code whatever you wa
 You can also write a text directly on the LCD by sending a message to the Telegram Bot (not implemented but easy to do)
 
 1. How to get your **ID**:
-   - send ```/getid``` to [myidbot](https://telegram.me/myidbot) on [Telegram](https://web.telegram.org/k/)
+   - send ```/getid``` to [@myidbot](https://telegram.me/myidbot) on [Telegram](https://web.telegram.org/k/)
    - Copy/paste your ID in ```SECRETS.json``` at ``TELEGRAM_ID_OWNER`` without (') or (")
 2. How to get your **TOKEN**:
    - Config a bot with [@BotFather](https://telegram.me/BotFather):
@@ -141,7 +133,7 @@ Just send ```/help``` to your Telegram bot and see all command ! 😊
 - send ```/mybots``` to [@BotFather](https://telegram.me/BotFather) and select your Telegram bot
 - select ```Edit Bot```
 - select ```Edit Commands```
-- paste message from ```/help``` without /
+- paste message from ```/help``` without ``/``
 
 | Command         | Description                                            |
 |-----------------|--------------------------------------------------------|
