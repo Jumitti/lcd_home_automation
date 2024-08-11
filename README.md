@@ -23,6 +23,7 @@ You can buy one of these great little I2C LCD on eBay or somewhere like [the Pi 
    - [LCD demo](#lcd-demo)
    - [NetMonitor](#netmonitor)
    - [Progress bar](#progress-bar)
+   - [Simulator](#simulator)
    - [Tiny Dashboard](#tiny-dashboard)
 1. [Implementation](#implementation)
    - [Systemd](#systemd)
@@ -224,6 +225,29 @@ This is a demo of a graphical progress bar created with [custom characters](#cus
 
 <p align="center">
   <img src="imgs/demo_progress_bar.jpg" width="50%">
+</p>
+
+### Simulator
+
+- Author: [@Jumitti](https://github.com/Jumitti)
+
+Just a 16x2 LCD screen simulator using Tkinter, allowing for easy testing and visualization of LCD displays without physical hardware. This simulator helps in developing and debugging LCD-based projects directly from a computer.
+Especially if you don't have your Raspberry and LCD with you.
+
+All you have to do is replace ``Lcd()`` and ``CustomCharacters()`` with ``LcdSimulator()`` and ``CustomCharactersSimulator()``.
+The other functions are similar.
+
+```Python
+import drivers
+
+display = drivers.LcdSimulator()
+cc = drivers.CustomCharactersSimulator(display)
+
+# Then the rest of your finest feats
+```
+
+<p align="center">
+  <img src="imgs/demo_simulator.gif" width="50%">
 </p>
 
 ### Tiny dashboard
