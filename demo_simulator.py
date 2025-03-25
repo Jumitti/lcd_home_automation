@@ -1,19 +1,21 @@
+#! /usr/bin/env python
+
 # Just a 16x2 LCD screen simulator using Tkinter, allowing for easy testing and
 # visualization of LCD displays without physical hardware. This simulator helps
 # in developing and debugging LCD-based projects directly from a computer.
 
 # Import necessary libraries for communication and display use
-import drivers
+import simulators
 from time import sleep
 from datetime import datetime
 
 
 # Load the driver and set it to "display"
 # If you use something from the driver library use the "display." prefix first
-display = drivers.LcdSimulator()
+display = simulators.LcdSimulator()
 
 # Create object with custom characters data
-cc = drivers.CustomCharactersSimulator(display)
+cc = simulators.CustomCharactersSimulator(display)
 
 # Redefine the default characters:
 # Custom caracter #1. Code {0x00}.
@@ -43,7 +45,11 @@ try:
             display.lcd_display_string(str(datetime.now().time()), 2)
             i += 1
 
-        if i > 10:
+        elif 11 <= i <= 20:
+            display.lcd_display_string("    ENJOY :)    ", line=2)
+            i += 1
+
+        if i > 20:
             i = 0
 
         sleep(0.5)

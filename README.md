@@ -234,17 +234,34 @@ This is a demo of a graphical progress bar created with [custom characters](#cus
 Just a 16x2 LCD screen simulator using Tkinter, allowing for easy testing and visualization of LCD displays without physical hardware. This simulator helps in developing and debugging LCD-based projects directly from a computer.
 Especially if you don't have your Raspberry and LCD with you.
 
-All you have to do is replace ``Lcd()`` and ``CustomCharacters()`` with ``LcdSimulator()`` and ``CustomCharactersSimulator()``.
-The other functions are similar.
+Tkinter is a standard library (on **WINDOWS**).
+If there is an error, how to install on **Debian/Ubuntu**:
+```bash
+sudo apt update
+sudo apt install python3-tk
+```
+On **macOS**:
+```bash
+brew install python-tk
+```
 
+List of replaced functions:
+- ``import drivers`` => ``import simulators``
+- ``Lcd()`` => ``LcdSimulator()``
+- ``CustomCharacters`` => ``CustomCharactersSimulator()``
+
+Suggested beginning program:
 ```Python
-import drivers
+import simulators
 
-display = drivers.LcdSimulator()
-cc = drivers.CustomCharactersSimulator(display)
+display = simulators.LcdSimulator()
+cc = simulators.CustomCharactersSimulator(display)
 
 # Then the rest of your finest feats
 ```
+
+All other functions are the same. **Please refer to [demo_simulator.py](demo_simulator.py)**
+
 
 <p align="center">
   <img src="imgs/demo_simulator.gif" width="50%">
