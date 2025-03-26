@@ -1,3 +1,6 @@
 test
 .git
 .idea
+dist
+build
+LCD_16x2.egg-info

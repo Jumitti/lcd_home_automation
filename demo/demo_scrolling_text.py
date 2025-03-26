@@ -5,8 +5,9 @@
 # Created by Dídac García.
 
 # Import necessary libraries for communication and display use
-import drivers
+from lcd_16x2 import drivers
 from time import sleep
+import sys
 
 # Load the driver and set it to "display"
 # If you use something from the driver library use the "display." prefix first
@@ -14,6 +15,13 @@ display = drivers.Lcd()
 
 # Main body of code
 try:
+	if sys.platform != "linux" or "raspberry" not in sys.platform:
+		print("Warning: This script uses 'smbus', which is specific to Raspberry Pi.")
+		print("You are on a different system (Windows, macOS, etc.). The demo will not function as expected.")
+		print(
+			"Please try running this script on a Raspberry Pi for full functionality or use demo_emulator.py instead.")
+		sys.exit(1)
+
 	print("Press CTRL + C to stop this script!")
 
 	def long_string(display, text='', num_line=1, num_cols=16):

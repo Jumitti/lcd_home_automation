@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import drivers
+from lcd_16x2 import drivers
 from datetime import date
 from datetime import time
 from datetime import datetime
@@ -7,6 +7,15 @@ import time
 import threading
 import requests
 import socket
+
+import sys
+
+if sys.platform != "linux" or "raspberry" not in sys.platform:
+    print("Warning: This script uses 'smbus', which is specific to Raspberry Pi.")
+    print("You are on a different system (Windows, macOS, etc.). The demo will not function as expected.")
+    print("Please try running this script on a Raspberry Pi for full functionality or use demo_emulator.py instead.")
+    sys.exit(1)
+
 
 '''
 This is a script that takes info from some apis and shows it in the 16*2 display.

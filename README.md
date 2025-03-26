@@ -31,6 +31,19 @@ You can buy one of these great little I2C LCD on eBay or somewhere like [the Pi 
 
 ## Installation
 
+### Using pip
+With GitHub:
+```bash
+pip install git+https://github.com/Jumitti/lcd_home_automation.git@package
+```
+With Pypi:
+
+```bash
+pip install LCD_16x2
+```
+
+### Cloning repo
+
 - Install git
 
   ```sh
@@ -68,19 +81,19 @@ You can buy one of these great little I2C LCD on eBay or somewhere like [the Pi 
 - After rebooting, try one of the [**demos**](#demos):
 
   ```sh
-  ./home/${USER}/lcd/demo_clock.py
+  ./home/${USER}/lcd/demo/demo_clock.py
   ```
 
   or
 
   ```sh
-  python /home/${USER}/lcd/demo_clock.py
+  python /home/${USER}/lcd/demo/demo_clock.py
   ```
 
   or
 
   ```sh
-  python3 /home/${USER}/lcd/demo_clock.py
+  python3 /home/${USER}/lcd/demo/demo_clock.py
   ```
 
 [top :arrow_up:](#table-of-contents)
@@ -152,7 +165,7 @@ And because it is an emulator, if you wanted to add or remove columns and lines 
 Suggested beginning program:
 
 ```Python
-import emulators
+from lcd_16x2 import emulators
 
 display = emulators.LcdEmulator()
 cc = emulators.CustomCharactersEmulator(display)
@@ -166,7 +179,7 @@ All other functions are the same. **Please refer to [demo_emulator.py](demo_emul
 
 - **Parameters for `LcdEmulator()`**
 ```Python
-import emulators
+from lcd_16x2 import emulators
 
 display = emulators.LcdEmulator(TITTLE_WINDOWS="Hello World",
                                 LCD_BACKGROUND="pale turquoise", LCD_FOREGROUND="orange",

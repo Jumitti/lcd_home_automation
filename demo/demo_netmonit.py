@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
-import drivers
+from lcd_16x2 import drivers
 from time import sleep
 from os import devnull
 from subprocess import call, check_output
+
+import sys
+
+if sys.platform != "linux" or "raspberry" not in sys.platform:
+    print("Warning: This script uses 'smbus', which is specific to Raspberry Pi.")
+    print("You are on a different system (Windows, macOS, etc.). The demo will not function as expected.")
+    print("Please try running this script on a Raspberry Pi for full functionality or use demo_emulator.py instead.")
+    sys.exit(1)
 
 
 def cleanup():

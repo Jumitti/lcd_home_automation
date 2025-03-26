@@ -5,7 +5,7 @@
 # in developing and debugging LCD-based projects directly from a computer.
 
 # Import necessary libraries for communication and display use
-import emulators
+from lcd_16x2 import emulators
 from time import sleep
 from datetime import datetime
 
