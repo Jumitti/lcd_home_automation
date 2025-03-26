@@ -117,12 +117,17 @@ def get_date():
 # Spotify now playing
 def get_spotify_now_playing(sp):
     try:
-        current_track = sp.current_playback()
-        if current_track and current_track.get('is_playing', False):
+        current_track = sp.current_playback(additional_types='episode')
+        if current_track['currently_playing_type'] != "episode" and current_track.get('is_playing', True):
             is_playing = 1
             track_name = current_track['item']['name']
             artists = ', '.join([artist['name'] for artist in current_track['item']['artists']])
             music = f"{track_name}-{artists}"
+        elif current_track["currently_playing_type"] == "episode" and current_track.get("is_playing", True):
+            is_playing = 1
+            episode_name = current_track["item"]["name"]
+            publisher = current_track["item"]["show"]["publisher"]
+            music = f"{episode_name}-{publisher}"
         else:
             is_playing = 0
             music = None
