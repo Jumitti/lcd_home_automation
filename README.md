@@ -35,11 +35,19 @@ You can buy one of these great little I2C LCD on eBay or somewhere like [the Pi 
 With GitHub:
 ```bash
 pip install git+https://github.com/Jumitti/lcd_home_automation.git@package
+
+# or
+
+sudo pip install git+https://github.com/Jumitti/lcd_home_automation.git@package
 ```
 With Pypi:
 
 ```bash
-pip install LCD_16x2
+pip install LCD-16x2
+
+# or
+
+sudo pip install LCD-16x2
 ```
 
 ### Cloning repo
