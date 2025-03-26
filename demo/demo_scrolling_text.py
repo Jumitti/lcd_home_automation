@@ -15,7 +15,7 @@ display = drivers.Lcd()
 
 # Main body of code
 try:
-	if sys.platform != "linux" or "raspberry" not in sys.platform:
+	if sys.platform != "linux":
 		print("Warning: This script uses 'smbus', which is specific to Raspberry Pi.")
 		print("You are on a different system (Windows, macOS, etc.). The demo will not function as expected.")
 		print(

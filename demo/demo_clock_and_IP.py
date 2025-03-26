@@ -7,7 +7,7 @@ from subprocess import check_output
 
 import sys
 
-if sys.platform != "linux" or "raspberry" not in sys.platform:
+if sys.platform != "linux":
     print("Warning: This script uses 'smbus', which is specific to Raspberry Pi.")
     print("You are on a different system (Windows, macOS, etc.). The demo will not function as expected.")
     print("Please try running this script on a Raspberry Pi for full functionality or use demo_emulator.py instead.")

@@ -8,7 +8,7 @@ if sys.platform.startswith("linux") and os.path.exists("install.sh"):
 
 setup(
     name="LCD_16x2",
-    version="0.1.0-alpha1",
+    version="0.1.0-alpha2",
     packages=["lcd_16x2",
               "lcd_16x2.drivers",
               "lcd_16x2.emulators",

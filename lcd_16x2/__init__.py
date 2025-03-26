@@ -8,4 +8,4 @@ from .emulators.emulator import LcdEmulator, CustomCharactersEmulator
 
 __all__ = ["Lcd", "CustomCharacters", "LcdEmulator", "CustomCharactersEmulator"]
 
-__version__ = "0.1.0-alpha1"
+__version__ = "0.1.0-alpha2"
