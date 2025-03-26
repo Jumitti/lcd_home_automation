@@ -5,17 +5,17 @@
 # in developing and debugging LCD-based projects directly from a computer.
 
 # Import necessary libraries for communication and display use
-import simulators
+import emulators
 from time import sleep
 from datetime import datetime
 
 
 # Load the driver and set it to "display"
 # If you use something from the driver library use the "display." prefix first
-display = simulators.LcdSimulator()
+display = emulators.LcdEmulator()
 
 # Create object with custom characters data
-cc = simulators.CustomCharactersSimulator(display)
+cc = emulators.CustomCharactersEmulator(display)
 
 # Redefine the default characters:
 # Custom caracter #1. Code {0x00}.
