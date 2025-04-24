@@ -302,6 +302,16 @@ class CustomCharactersEmulator:
                             "10001",
                             "11111"]
 
+        # Data for custom character #9. Code {0x08}
+        self.char_9_data = ["11111",
+                            "10001",
+                            "10001",
+                            "10001",
+                            "10001",
+                            "10001",
+                            "10001",
+                            "11111"]
+
     # load custom character data to CG RAM for later use in extended string. Data for
     # characters is hold in file custom_characters.txt in the same folder as i2c_dev.py
     # file. These custom characters can be used in printing of extended string with a
@@ -316,7 +326,8 @@ class CustomCharactersEmulator:
             (f"{{0x04}}", self.char_5_data),
             (f"{{0x05}}", self.char_6_data),
             (f"{{0x06}}", self.char_7_data),
-            (f"{{0x07}}", self.char_8_data)
+            (f"{{0x07}}", self.char_8_data),
+            (f"{{0x08}}", self.char_9_data),
         ]
 
         for char_name, bitmap in char_data_list:
