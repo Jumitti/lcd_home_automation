@@ -1,149 +1,73 @@
-#! /usr/bin/env python
-import time
-
-# Just a 16x2 LCD screen simulator using Tkinter, allowing for easy testing and
-# visualization of LCD displays without physical hardware. This simulator helps
-# in developing and debugging LCD-based projects directly from a computer.
-
-# Import necessary libraries for communication and display use
-import emulators
+from lcd_runner_dev.emulator import LcdEmulator
+from PIL import Image
 from time import sleep
-from datetime import datetime
-import keyboard
 
+def sprite_to_raw_bits(sprite):
+    return "".join(sprite)
 
-# Load the driver and set it to "display"
-# If you use something from the driver library use the "display." prefix first
-display = emulators.LcdEmulator(TITTLE_WINDOWS="Runner LCD")
+def merge_sprite_on_block(sprite_bits, block_bits):
+    # Fait un "OU" logique entre sprite et bloc
+    return "".join("1" if s == "1" or b == "1" else "0" for s, b in zip(sprite_bits, block_bits))
 
-# Create object with custom characters data
-cc = emulators.CustomCharactersEmulator(display, 20)
+def block_to_binary_string(block):
+    bits = ""
+    for y in range(8):
+        for x in range(5):
+            pixel = block.getpixel((x, y))
+            bits += "1" if pixel == 0 else "0"
+    return bits
 
-# Redefine the default characters:
-# Custom caracter #1. Code {0x00}. Sprite STAND
-cc.char_data[f"00"] = ["00000", "00011", "00011", "00110", "00011", "00010", "00101", "00101"]
-# Custom caracter #2. Code {0x01}. Sprite RUN 1
-cc.char_data[f"01"] = ["00000", "00110", "00110", "01100", "10111", "00100", "01010", "10010"]
-# Custom caracter #3. Code {0x02}. Sprite RUN 2
-cc.char_data[f"03"] = ["00000", "00110", "00110", "01100", "00100", "01110", "01010", "10100"]
+def extract_blocks_scroll(img, offset, num_blocks=16):
+    width, _ = img.size
+    top_blocks = []
+    bottom_blocks = []
 
-cc.char_data[f"04"] = ["00000", "00011", "00011", "00110", "00011", "00010", "00101", "00101"]
-# Custom caracter #2. Code {0x01}. Sprite RUN 1
-cc.char_data[f"05"] = ["00000", "00110", "00110", "01100", "10111", "00100", "01010", "10010"]
-# Custom caracter #3. Code {0x02}. Sprite RUN 2
-cc.char_data[f"06"] = ["00000", "00110", "00110", "01100", "00100", "01110", "01010", "10100"]
+    for i in range(num_blocks):
+        x = offset + i * 5
+        if x + 5 > width:
+            break
+        top_block = img.crop((x, 0, x + 5, 8))
+        bottom_block = img.crop((x, 8, x + 5, 16))
+        top_blocks.append(block_to_binary_string(top_block))
+        bottom_blocks.append(block_to_binary_string(bottom_block))
 
-# Load custom characters data to CG RAM:
-cc.load_custom_characters_data()
+    return top_blocks, bottom_blocks
 
-start = True
-paused = True
-position = 2
-life = 3
+# Définition des sprites
+sprite1 = ["00000", "00000", "11000", "01100", "00110", "11111", "01110", "00000"]
+sprite2 = ["00000", "00000", "00000", "11000", "01101", "11111", "00110", "00000"]
+sprite3 = ["00000", "00000", "00000", "00110", "11111", "01100", "00000", "00000"]
+sprite4 = ["00000", "00000", "01100", "11111", "00110", "11000", "00000", "00000"]
+sprites = [sprite1, sprite2, sprite3, sprite4]
 
+# Initialisation écran
+display = LcdEmulator(TITTLE_WINDOWS="Runner LCD")
+img = Image.open("mountain_16x640.png").convert("1")
+img_width, _ = img.size
 
-def update_display(line1=None, line2=None, position1=None, position2=None):
-    display.lcd_clear()
-    if line1 and position1:
-        display.lcd_display_extended_string(line1, position1)
-    if line2 and position2:
-        display.lcd_display_extended_string(line2, position2)
-
-
-def run():
-    for i in range(3):
-        if paused:
-            return
-
-        display.lcd_display_extended_string(f"{{0x0{i}}}", line=position)
-        display.lcd_clear()
-        time.sleep(1 / 12)
-
-
-def pause():
-    update_display(line1="{0x00}    PAUSE.   ", position1=position)
-
+offset = 0
+frame = 0
 
 while True:
-    if start:
-        rules = "        Use UP, DOWN and SPACE (PAUSE) to avoid obstacles        "
-        j = 0
-        k = 1
-        l = 2
-        for i in range(len(rules) - 15):
+    if offset + 5 + 16 > img_width:
+        offset = 0
 
-            if keyboard.is_pressed('space'):
-                start = not start
-                display.lcd_clear()
-                break
+    top_blocks, bottom_blocks = extract_blocks_scroll(img, offset)
 
-            line1 = f"{{0x0{j}}}{{0x0{k}}}{{0x0{l}}}Runner LCD{{0x0{l}}}{{0x0{k}}}{{0x0{j}}}}}"
-            j = (j + 1) % 9
-            k = (k + 1) % 9
-            l = (l + 1) % 9
-            line2 = rules[i:i + 16]
-            time.sleep(0.20)
-            update_display(line1, line2, 1, 2)
+    # Ligne 1 : montagne normale
+    line1 = "{" + "}{".join(top_blocks) + "}"
 
-    elif not start:
-        if life == 3:
-            life_code = "{0x12}"
-        elif life == 2:
-            life_code = "{0x11}"
-        elif life == 1:
-            life_code = "{0x10}"
-        elif life == 0:
-            life_code = "{0x09}"
+    # Ligne 2 : sprite fusionné dans le premier bloc
+    sprite_bits = sprite_to_raw_bits(sprites[frame % len(sprites)])
+    original_block = bottom_blocks[0]
+    merged_block = merge_sprite_on_block(sprite_bits, original_block)
+    bottom_blocks[0] = merged_block
+    line2 = "{" + "}{".join(bottom_blocks) + "}"
 
-        if keyboard.is_pressed('space'):
-            paused = not paused
-            if paused:
-                pause()
-            else:
-                display.lcd_clear()
+    display.lcd_clear()
+    display.lcd_display_extended_string(line1, line=1)
+    display.lcd_display_extended_string(line2, line=2)
 
-            while keyboard.is_pressed('space'):
-                time.sleep(1 / 12)
-
-        if not paused:
-            if keyboard.is_pressed('up') and position != 1:
-                for i in range(3, 6):
-                    time.sleep(1 / 12)
-
-                    if i < 5:
-                        line1 = f"               {life_code}"
-                        line2 = f"{{0x0{i}}}"
-
-                    elif i == 5:
-                        line1 = f"{{0x0{i}}}              {life_code}"
-                        line2 = None
-                        position = 1
-
-                    update_display(line1=line1, line2=line2, position1=1, position2=2)
-
-            elif keyboard.is_pressed('down') and position != 2:
-                for i in range(6, 9):
-                    time.sleep(1 / 12)
-
-                    if i < 8:
-                        line1 = f"{{0x0{i}}}              {life_code}"
-                        line2 = None
-
-                    elif i == 8:
-                        line1 = f"               {life_code}"
-                        line2 = f"{{0x0{i}}}"
-                        position = 2
-
-                    update_display(line1=line1, line2=line2, position1=1, position2=2)
-
-            for i in range(3):
-                time.sleep(1 / 12)
-
-                if position == 1:
-                    line1 = f"{{0x0{i}}}              {life_code}"
-                    line2 = None
-                if position == 2:
-                    line1 = f"               {life_code}"
-                    line2 = f"{{0x0{i}}}"
-
-                update_display(line1=line1, line2=line2, position1=1, position2=2)
+    offset += 1
+    frame += 1
+    sleep(1/12)
