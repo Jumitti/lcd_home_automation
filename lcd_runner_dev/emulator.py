@@ -171,19 +171,35 @@ class LcdEmulator:
         i = 0
         x_offset = 0
         while i < len(text):
-            match_result = match(r'\{0[xX][0-9a-fA-F]{2}}', text[i:])
-            if match_result:
-                char_code = match_result.group(0)
+            # Cherche un motif {0x??}
+            hex_match = match(r'\{0[xX][0-9a-fA-F]{2}}', text[i:])
+            # Cherche un motif {010101...} avec 40 bits exactement
+            bin_match = match(r'\{[01]{40}}', text[i:])
+
+            if hex_match:
+                char_code = hex_match.group(0)
                 custom_char_bitmap = self.custom_characters.get_custom_char(char_code)
                 self.custom_characters.draw_custom_char(custom_char_bitmap,
                                                         x_offset * self.CHAR_WIDTH,
-                                                        line * self.CHAR_HEIGHT, self.LCD_FOREGROUND)
+                                                        line * self.CHAR_HEIGHT,
+                                                        self.LCD_FOREGROUND)
                 x_offset += 1
-                i += 6
+                i += len(char_code)
+            elif bin_match:
+                bit_string = bin_match.group(0)[1:-1]  # Enlève les { }
+                # Convertir les 40 bits en bitmap 8x5
+                custom_bitmap = [bit_string[j:j + 5] for j in range(0, 40, 5)]
+                self.custom_characters.draw_custom_char(custom_bitmap,
+                                                        x_offset * self.CHAR_WIDTH,
+                                                        line * self.CHAR_HEIGHT,
+                                                        self.LCD_FOREGROUND)
+                x_offset += 1
+                i += len(bin_match.group(0))
             else:
                 self.canvas.itemconfig(self.chars[line * self.COLUMNS + x_offset], text=text[i])
                 x_offset += 1
                 i += 1
+
         self.lcd_update()
 
     # clear lcd
